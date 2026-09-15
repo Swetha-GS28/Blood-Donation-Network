@@ -1,0 +1,18 @@
+# Maven
+target/
+.mvn/timing.properties
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Local configuration containing passwords
+application-local.properties
+
+# Environment files
+.env
