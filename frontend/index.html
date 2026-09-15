@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Blood Donation Network
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav>
+
+        <h2>
+            Blood Donation Network
+        </h2>
+
+        <div>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#find-donor">
+                Find Donor
+            </a>
+
+            <a href="#register-donor">
+                Register as Donor
+            </a>
+
+            <a href="#emergency-request">
+                Blood Request
+            </a>
+
+            <a href="#match-history">
+                Match History
+            </a>
+
+            <a href="#login">
+                Login
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         HOME
+    ========================= -->
+
+    <section id="home">
+
+        <h1>
+            Blood Donation Network
+        </h1>
+
+        <p>
+            Connecting blood donors with people in need.
+        </p>
+
+
+        <!-- STATISTICS -->
+
+        <div class="statistics">
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Registered Donors
+                </h3>
+
+                <p id="donor-count">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Emergency Requests
+                </h3>
+
+                <p id="emergency-request-count">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Successful Matches
+                </h3>
+
+                <p id="match-count">
+                    0
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FIND DONOR
+    ========================= -->
+
+    <section id="find-donor">
+
+        <h2>
+            Find a Donor
+        </h2>
+
+
+        <label>
+            Blood Group
+        </label>
+
+        <select id="blood-group">
+
+            <option value="">
+                Select Blood Group
+            </option>
+
+            <option value="A+">
+                A+
+            </option>
+
+            <option value="A-">
+                A-
+            </option>
+
+            <option value="B+">
+                B+
+            </option>
+
+            <option value="B-">
+                B-
+            </option>
+
+            <option value="AB+">
+                AB+
+            </option>
+
+            <option value="AB-">
+                AB-
+            </option>
+
+            <option value="O+">
+                O+
+            </option>
+
+            <option value="O-">
+                O-
+            </option>
+
+        </select>
+
+
+        <label>
+            Location
+        </label>
+
+        <input
+            type="text"
+            id="location"
+            placeholder="Enter location"
+        >
+
+
+        <button
+            id="search-Donor-btn"
+            type="button"
+        >
+            Search Donor
+        </button>
+
+
+        <div id="donor-results">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         REGISTER AS DONOR
+    ========================= -->
+
+    <section id="register-donor">
+
+        <h2>
+            Register as a Donor
+        </h2>
+
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Enter your name"
+        >
+
+
+        <select id="donor-blood-group">
+
+            <option value="">
+                Select Blood Group
+            </option>
+
+            <option value="A+">
+                A+
+            </option>
+
+            <option value="A-">
+                A-
+            </option>
+
+            <option value="B+">
+                B+
+            </option>
+
+            <option value="B-">
+                B-
+            </option>
+
+            <option value="AB+">
+                AB+
+            </option>
+
+            <option value="AB-">
+                AB-
+            </option>
+
+            <option value="O+">
+                O+
+            </option>
+
+            <option value="O-">
+                O-
+            </option>
+
+        </select>
+
+
+        <input
+            type="text"
+            id="donor-location"
+            placeholder="Enter your location"
+        >
+
+
+        <input
+            type="text"
+            id="phone"
+            placeholder="Enter phone number"
+        >
+
+
+        <button
+            id="register-donor-btn"
+            type="button"
+        >
+            Register Donor
+        </button>
+
+
+        <div id="registration-result">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         EMERGENCY BLOOD REQUEST
+    ========================= -->
+
+    <section id="emergency-request">
+
+        <h2>
+            Emergency Blood Request
+        </h2>
+
+
+        <input
+            type="text"
+            id="patient-name"
+            placeholder="Patient name"
+        >
+
+
+        <select id="required-blood-group">
+
+            <option value="">
+                Select Required Blood Group
+            </option>
+
+            <option value="A+">
+                A+
+            </option>
+
+            <option value="A-">
+                A-
+            </option>
+
+            <option value="B+">
+                B+
+            </option>
+
+            <option value="B-">
+                B-
+            </option>
+
+            <option value="AB+">
+                AB+
+            </option>
+
+            <option value="AB-">
+                AB-
+            </option>
+
+            <option value="O+">
+                O+
+            </option>
+
+            <option value="O-">
+                O-
+            </option>
+
+        </select>
+
+
+        <input
+            type="number"
+            id="units"
+            placeholder="Number of units required"
+        >
+
+
+        <input
+            type="text"
+            id="hospital"
+            placeholder="Hospital name"
+        >
+
+
+        <input
+            type="text"
+            id="request-location"
+            placeholder="Location"
+        >
+
+
+        <button
+            id="emergency-request-btn"
+            type="button"
+        >
+            Submit Emergency Request
+        </button>
+
+
+        <div id="emergency-result">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         EMERGENCY REQUEST MANAGEMENT
+    ========================= -->
+
+    <section id="emergency-requests">
+
+        <h2>
+            Emergency Requests
+        </h2>
+
+        <p>
+            View emergency blood requests and find matching donors.
+        </p>
+
+
+        <button
+            id="view-emergency-requests-btn"
+            type="button"
+        >
+            View Emergency Requests
+        </button>
+
+
+        <div id="emergency-requests-list">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MATCH HISTORY
+    ========================= -->
+
+    <section id="match-history">
+
+        <h2>
+            Successful Matches
+        </h2>
+
+        <p>
+            View all successfully created donor and emergency request matches.
+        </p>
+
+
+        <button
+            id="view-matches-btn"
+            type="button"
+        >
+            View Successful Matches
+        </button>
+
+
+        <div id="matches-list">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         LOGIN
+    ========================= -->
+
+    <section id="login">
+
+        <h2>
+            Login
+        </h2>
+
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+        >
+
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+        >
+
+
+        <button
+            id="login-btn"
+            type="button"
+        >
+            Login
+        </button>
+
+
+        <!-- =========================
+             CREATE ACCOUNT
+        ========================= -->
+
+        <h3>
+            Create Account
+        </h3>
+
+
+        <input
+            type="email"
+            id="signup-email"
+            placeholder="Enter your email"
+        >
+
+
+        <input
+            type="password"
+            id="signup-password"
+            placeholder="Create a password"
+        >
+
+
+        <button
+            id="signup-btn"
+            type="button"
+        >
+            Create Account
+        </button>
+
+
+        <div id="signup-result">
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Blood Donation Network
+        </p>
+
+        <p>
+            Connecting donors with people in need.
+        </p>
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script src="js/script.js"></script>
+
+
+</body>
+
+</html>
