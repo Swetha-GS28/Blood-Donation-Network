@@ -52,7 +52,7 @@ async function updateEmergencyRequestCount() {
     try {
 
         const response = await fetch(
-            "http://localhost:8081/api/emergency-requests/count"
+            "https://blood-donation-network-production.up.railway.app/api/emergency-requests/count"
         );
 
         if (!response.ok) {
