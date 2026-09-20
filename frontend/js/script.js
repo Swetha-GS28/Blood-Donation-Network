@@ -14,7 +14,7 @@ async function updateDonorCount() {
     try {
 
         const response = await fetch(
-            "http://localhost:8081/api/donors/count"
+            "https://blood-donation-network-production.up.railway.app/api/donors/count"
         );
 
         if (!response.ok) {
@@ -90,7 +90,7 @@ async function updateMatchCount() {
     try {
 
         const response = await fetch(
-            "http://localhost:8081/api/matches/count"
+            "https://blood-donation-network-production.up.railway.app/api/matches/count"
         );
 
         if (!response.ok) {
@@ -180,7 +180,7 @@ function setupFindDonor() {
             try {
 
                 const response = await fetch(
-                    `http://localhost:8081/api/donors/search?bloodGroup=${encodeURIComponent(selectedBloodGroup)}&location=${encodeURIComponent(enteredLocation)}`
+                    `https://blood-donation-network-production.up.railway.app/api/donors/search?bloodGroup=${encodeURIComponent(selectedBloodGroup)}&location=${encodeURIComponent(enteredLocation)}`
                 );
 
 
@@ -366,7 +366,7 @@ function setupDonorRegistration() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/donors",
+                        "https://blood-donation-network-production.up.railway.app/api/donors",
                         {
 
                             method: "POST",
@@ -541,7 +541,7 @@ function setupEmergencyRequest() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/emergency-requests",
+                        "https://blood-donation-network-production.up.railway.app/api/emergency-requests",
                         {
 
                             method: "POST",
@@ -639,7 +639,7 @@ function setupEmergencyRequests() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/emergency-requests"
+                        "https://blood-donation-network-production.up.railway.app/api/emergency-requests"
                     );
 
 
@@ -772,7 +772,7 @@ function setupEmergencyRequests() {
 
                                     const response =
                                         await fetch(
-                                            `http://localhost:8081/api/donors/search?bloodGroup=${encodeURIComponent(bloodGroup)}&location=${encodeURIComponent(location)}`
+                                            `https://blood-donation-network-production.up.railway.app/api/donors/search?bloodGroup=${encodeURIComponent(bloodGroup)}&location=${encodeURIComponent(location)}`
                                         );
 
 
@@ -897,7 +897,7 @@ function setupEmergencyRequests() {
 
                                                         const response =
                                                             await fetch(
-                                                                "http://localhost:8081/api/matches",
+                                                                "https://blood-donation-network-production.up.railway.app/api/matches",
                                                                 {
 
                                                                     method:
@@ -1049,7 +1049,7 @@ function setupMatchHistory() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/matches"
+                        "https://blood-donation-network-production.up.railway.app/api/matches"
                     );
 
 
@@ -1199,7 +1199,7 @@ function setupLogin() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/users/login",
+                        "https://blood-donation-network-production.up.railway.app/api/users/login",
                         {
 
                             method: "POST",
@@ -1342,7 +1342,7 @@ function setupSignup() {
 
                 const response =
                     await fetch(
-                        "http://localhost:8081/api/users/register",
+                        "https://blood-donation-network-production.up.railway.app/api/users/register",
                         {
 
                             method: "POST",
