@@ -21,13 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
-
     // GET ALL USERS
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-
 
     // USER REGISTRATION
     @PostMapping("/register")
@@ -60,37 +58,41 @@ public class UserController {
                 .ok(response);
     }
 
-
     // USER LOGIN
     @PostMapping("/login")
-    public Map<String, String> loginUser(
+    public ResponseEntity<Map<String, String>> loginUser(
             @RequestBody User user
     ) {
 
-        boolean loginSuccessful =
-                userService.loginUser(
-                        user.getEmail(),
-                        user.getPassword()
-                );
+        User loggedInUser = userService.loginUser(
+                user.getEmail(),
+                user.getPassword()
+        );
 
         Map<String, String> response = new HashMap<>();
 
-        if (loginSuccessful) {
+        if (loggedInUser != null) {
 
             response.put(
                     "message",
                     "Login successful"
             );
 
-        } else {
-
             response.put(
-                    "message",
-                    "Invalid email or password"
+                    "role",
+                    loggedInUser.getRole()
             );
+
+            return ResponseEntity.ok(response);
         }
 
-        return response;
-    }
+        response.put(
+                "message",
+                "Invalid email or password"
+        );
 
+        return ResponseEntity
+                .badRequest()
+                .body(response);
+    }
 }

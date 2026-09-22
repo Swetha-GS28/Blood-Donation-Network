@@ -1131,6 +1131,7 @@ function setupMatchHistory() {
 
         }
     );
+
 }
 
 
@@ -1227,6 +1228,21 @@ function setupLogin() {
                     "Login successful"
                 ) {
 
+                    /* =========================
+                       SAVE LOGIN INFORMATION
+                    ========================= */
+
+                    localStorage.setItem(
+                        "userRole",
+                        data.role
+                    );
+
+                    localStorage.setItem(
+                        "userEmail",
+                        email
+                    );
+
+
                     alert(
                         "Login successful!"
                     );
@@ -1235,12 +1251,20 @@ function setupLogin() {
                     emailInput.value = "";
                     passwordInput.value = "";
 
+
+                    console.log(
+                        "Logged-in role:",
+                        data.role
+                    );
+
+
                 } else {
 
                     alert(
                         data.message ||
                         "Invalid email or password."
                     );
+
                 }
 
 
@@ -1255,6 +1279,7 @@ function setupLogin() {
 
         }
     );
+
 }
 
 
@@ -1407,6 +1432,7 @@ function setupSignup() {
 
         }
     );
+
 }
 
 

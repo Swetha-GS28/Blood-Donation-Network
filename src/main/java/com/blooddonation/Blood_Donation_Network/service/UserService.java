@@ -13,49 +13,46 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
-
         this.userRepository = userRepository;
-
     }
-
 
     // Register a new user
     public User registerUser(User user) {
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-
             return null;
+        }
 
+        // Do not allow public registration as ADMIN
+        if (user.getRole() == null ||
+                user.getRole().equalsIgnoreCase("ADMIN")) {
+
+            user.setRole("DONOR");
         }
 
         return userRepository.save(user);
-
     }
 
-
     // Login user
-    public boolean loginUser(String email, String password) {
+    public User loginUser(String email, String password) {
 
         User user = userRepository
                 .findByEmail(email)
                 .orElse(null);
 
         if (user == null) {
-
-            return false;
-
+            return null;
         }
 
-        return user.getPassword().equals(password);
+        if (!user.getPassword().equals(password)) {
+            return null;
+        }
 
+        return user;
     }
-
 
     // Get all registered users
     public List<User> getAllUsers() {
-
         return userRepository.findAll();
-
     }
-
 }
