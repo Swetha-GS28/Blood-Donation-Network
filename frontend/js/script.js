@@ -448,12 +448,12 @@ function setupEmergencyRequest() {
             "required-blood-group"
         );
 
-    const units =
+    const unitsInput =
         document.getElementById(
             "units"
         );
 
-    const hospital =
+    const hospitalInput =
         document.getElementById(
             "hospital"
         );
@@ -463,7 +463,7 @@ function setupEmergencyRequest() {
             "request-location"
         );
 
-    const emergencyResult =
+    const requestResult =
         document.getElementById(
             "emergency-result"
         );
@@ -481,27 +481,27 @@ function setupEmergencyRequest() {
             event.preventDefault();
 
 
-            const name =
+            const patient =
                 patientName.value.trim();
 
             const bloodGroup =
                 requiredBloodGroup.value;
 
-            const unitCount =
-                units.value;
+            const units =
+                unitsInput.value;
 
-            const hospitalName =
-                hospital.value.trim();
+            const hospital =
+                hospitalInput.value.trim();
 
             const location =
                 requestLocation.value.trim();
 
 
             if (
-                name === "" ||
+                patient === "" ||
                 bloodGroup === "" ||
-                unitCount === "" ||
-                hospitalName === "" ||
+                units === "" ||
+                hospital === "" ||
                 location === ""
             ) {
 
@@ -513,27 +513,27 @@ function setupEmergencyRequest() {
             }
 
 
-            if (Number(unitCount) <= 0) {
+            if (Number(units) <= 0) {
 
                 alert(
-                    "Number of units must be greater than 0."
+                    "Units required must be greater than 0."
                 );
 
                 return;
             }
 
 
-            const emergencyData = {
+            const requestData = {
 
-                patientName: name,
-                bloodGroup: bloodGroup,
-                units: Number(unitCount),
-                hospital: hospitalName,
+                patientName: patient,
+                requiredBloodGroup: bloodGroup,
+                units: Number(units),
+                hospital: hospital,
                 location: location
             };
 
 
-            emergencyResult.innerHTML =
+            requestResult.innerHTML =
                 "<p>Submitting emergency request...</p>";
 
 
@@ -553,22 +553,26 @@ function setupEmergencyRequest() {
 
                             body:
                                 JSON.stringify(
-                                    emergencyData
+                                    requestData
                                 )
                         }
                     );
 
 
+                const data =
+                    await response.json();
+
+
                 if (response.ok) {
 
-                    emergencyResult.innerHTML = `
+                    requestResult.innerHTML = `
 
                         <h3>
                             Emergency Request Submitted!
                         </h3>
 
                         <p>
-                            Your emergency blood request has been saved successfully.
+                            Your emergency blood request has been recorded successfully.
                         </p>
 
                     `;
@@ -576,8 +580,8 @@ function setupEmergencyRequest() {
 
                     patientName.value = "";
                     requiredBloodGroup.value = "";
-                    units.value = "";
-                    hospital.value = "";
+                    unitsInput.value = "";
+                    hospitalInput.value = "";
                     requestLocation.value = "";
 
 
@@ -585,8 +589,14 @@ function setupEmergencyRequest() {
 
                 } else {
 
-                    emergencyResult.innerHTML =
-                        "<p>Unable to submit the emergency request.</p>";
+                    requestResult.innerHTML = `
+
+                        <p>
+                            ${data.message ||
+                            "Unable to submit emergency request."}
+                        </p>
+
+                    `;
                 }
 
 
@@ -594,7 +604,7 @@ function setupEmergencyRequest() {
 
                 console.error(error);
 
-                emergencyResult.innerHTML =
+                requestResult.innerHTML =
                     "<p>Unable to connect to the server.</p>";
             }
 
@@ -605,8 +615,6 @@ function setupEmergencyRequest() {
 
 /* =========================
    EMERGENCY REQUESTS
-   FIND MATCHING DONORS
-   CREATE MATCH
 ========================= */
 
 function setupEmergencyRequests() {
@@ -655,10 +663,13 @@ function setupEmergencyRequests() {
                     await response.json();
 
 
-                requestsList.innerHTML = "";
+                requestsList.innerHTML =
+                    "";
 
 
-                if (requests.length === 0) {
+                if (
+                    requests.length === 0
+                ) {
 
                     requestsList.innerHTML =
                         "<p>No emergency requests found.</p>";
@@ -679,16 +690,21 @@ function setupEmergencyRequests() {
                         requestCard.innerHTML = `
 
                             <h3>
-                                ${request.patientName}
+                                Emergency Request #${request.id}
                             </h3>
 
                             <p>
-                                Blood Group:
-                                ${request.bloodGroup}
+                                Patient:
+                                ${request.patientName}
                             </p>
 
                             <p>
-                                Units Required:
+                                Blood Group:
+                                ${request.requiredBloodGroup}
+                            </p>
+
+                            <p>
+                                Units:
                                 ${request.units}
                             </p>
 
@@ -702,25 +718,19 @@ function setupEmergencyRequests() {
                                 ${request.location}
                             </p>
 
-                            <p>
-                                Request ID:
-                                ${request.id}
-                            </p>
-
                             <button
-                                type="button"
-                                class="find-matching-donors-btn"
-                                data-blood-group="${request.bloodGroup}"
+                                class="find-match-btn"
+                                data-id="${request.id}"
+                                data-blood-group="${request.requiredBloodGroup}"
                                 data-location="${request.location}"
-                                data-request-id="${request.id}"
                             >
                                 Find Matching Donors
                             </button>
 
                             <div
-                                class="matching-donors-results"
-                            >
-                            </div>
+                                class="matching-donors"
+                                id="matching-donors-${request.id}"
+                            ></div>
 
                         `;
 
@@ -728,39 +738,30 @@ function setupEmergencyRequests() {
                         requestsList.appendChild(
                             requestCard
                         );
-                    }
-                );
 
 
-                const matchingButtons =
-                    document.querySelectorAll(
-                        ".find-matching-donors-btn"
-                    );
+                        const matchButton =
+                            requestCard.querySelector(
+                                ".find-match-btn"
+                            );
 
 
-                matchingButtons.forEach(
-                    function (button) {
-
-                        button.addEventListener(
+                        matchButton.addEventListener(
                             "click",
                             async function () {
 
+                                const requestId =
+                                    this.dataset.id;
+
                                 const bloodGroup =
-                                    button.dataset.bloodGroup;
+                                    this.dataset.bloodGroup;
 
                                 const location =
-                                    button.dataset.location;
-
-                                const requestId =
-                                    button.dataset.requestId;
-
-
-                                const requestCard =
-                                    button.parentElement;
+                                    this.dataset.location;
 
                                 const resultsDiv =
-                                    requestCard.querySelector(
-                                        ".matching-donors-results"
+                                    document.getElementById(
+                                        `matching-donors-${requestId}`
                                     );
 
 
@@ -834,12 +835,11 @@ function setupEmergencyRequests() {
                                                 </p>
 
                                                 <button
-                                                    type="button"
-                                                    class="create-match-btn"
+                                                    class="match-donor-btn"
                                                     data-donor-id="${donor.id}"
                                                     data-request-id="${requestId}"
                                                 >
-                                                    Match This Donor
+                                                    Create Match
                                                 </button>
 
                                             `;
@@ -848,118 +848,105 @@ function setupEmergencyRequests() {
                                             resultsDiv.appendChild(
                                                 donorCard
                                             );
-                                        }
-                                    );
 
 
-                                    const matchButtons =
-                                        resultsDiv.querySelectorAll(
-                                            ".create-match-btn"
-                                        );
+                                            const matchDonorBtn =
+                                                donorCard.querySelector(
+                                                    ".match-donor-btn"
+                                                );
 
 
-                                    matchButtons.forEach(
-                                        function (matchButton) {
-
-                                            matchButton.addEventListener(
+                                            matchDonorBtn.addEventListener(
                                                 "click",
                                                 async function () {
 
                                                     const donorId =
-                                                        Number(
-                                                            matchButton.dataset.donorId
-                                                        );
+                                                        this.dataset.donorId;
 
                                                     const emergencyRequestId =
-                                                        Number(
-                                                            matchButton.dataset.requestId
-                                                        );
+                                                        this.dataset.requestId;
 
 
-                                                    const matchData = {
-
-                                                        donorId:
-                                                            donorId,
-
-                                                        emergencyRequestId:
-                                                            emergencyRequestId
-                                                    };
-
-
-                                                    matchButton.disabled =
+                                                    this.disabled =
                                                         true;
 
-                                                    matchButton.textContent =
+                                                    this.textContent =
                                                         "Creating Match...";
 
 
                                                     try {
 
-                                                        const response =
+                                                        const matchResponse =
                                                             await fetch(
                                                                 "https://blood-donation-network-production.up.railway.app/api/matches",
                                                                 {
 
-                                                                    method:
-                                                                        "POST",
+                                                                    method: "POST",
 
                                                                     headers: {
-
                                                                         "Content-Type":
                                                                             "application/json"
                                                                     },
 
                                                                     body:
                                                                         JSON.stringify(
-                                                                            matchData
+                                                                            {
+                                                                                donorId:
+                                                                                    Number(
+                                                                                        donorId
+                                                                                    ),
+
+                                                                                emergencyRequestId:
+                                                                                    Number(
+                                                                                        emergencyRequestId
+                                                                                    )
+                                                                            }
                                                                         )
                                                                 }
                                                             );
 
 
+                                                        const matchData =
+                                                            await matchResponse.json();
+
+
                                                         if (
-                                                            response.ok
+                                                            matchResponse.ok
                                                         ) {
 
                                                             alert(
-                                                                "Donor matched successfully!"
+                                                                "Match created successfully!"
                                                             );
 
+                                                            this.textContent =
+                                                                "Matched";
 
                                                             updateMatchCount();
 
-
-                                                            matchButton.textContent =
-                                                                "Matched Successfully";
-
-                                                        }
-
-                                                        else if (
-                                                            response.status === 409
+                                                        } else if (
+                                                            matchResponse.status ===
+                                                            409
                                                         ) {
 
                                                             alert(
                                                                 "This donor has already been matched with this emergency request."
                                                             );
 
-
-                                                            matchButton.textContent =
+                                                            this.textContent =
                                                                 "Already Matched";
 
-                                                        }
-
-                                                        else {
+                                                        } else {
 
                                                             alert(
-                                                                "Unable to create the match. Please try again."
+                                                                matchData.message ||
+                                                                "Unable to create match."
                                                             );
 
-
-                                                            matchButton.disabled =
+                                                            this.disabled =
                                                                 false;
 
-                                                            matchButton.textContent =
-                                                                "Match This Donor";
+                                                            this.textContent =
+                                                                "Create Match";
                                                         }
 
 
@@ -975,11 +962,11 @@ function setupEmergencyRequests() {
                                                         );
 
 
-                                                        matchButton.disabled =
+                                                        this.disabled =
                                                             false;
 
-                                                        matchButton.textContent =
-                                                            "Match This Donor";
+                                                        this.textContent =
+                                                            "Create Match";
                                                     }
 
                                                 }
@@ -1131,7 +1118,6 @@ function setupMatchHistory() {
 
         }
     );
-
 }
 
 
@@ -1228,10 +1214,6 @@ function setupLogin() {
                     "Login successful"
                 ) {
 
-                    /* =========================
-                       SAVE LOGIN INFORMATION
-                    ========================= */
-
                     localStorage.setItem(
                         "userRole",
                         data.role
@@ -1248,15 +1230,16 @@ function setupLogin() {
                     );
 
 
-                    emailInput.value = "";
-                    passwordInput.value = "";
-
-
                     console.log(
                         "Logged-in role:",
                         data.role
                     );
 
+
+                    emailInput.value = "";
+                    passwordInput.value = "";
+
+                    applyRoleBasedAccess();
 
                 } else {
 
@@ -1264,7 +1247,6 @@ function setupLogin() {
                         data.message ||
                         "Invalid email or password."
                     );
-
                 }
 
 
@@ -1279,7 +1261,6 @@ function setupLogin() {
 
         }
     );
-
 }
 
 
@@ -1302,6 +1283,11 @@ function setupSignup() {
     const signupPassword =
         document.getElementById(
             "signup-password"
+        );
+
+    const signupRole =
+        document.getElementById(
+            "signup-role"
         );
 
     const signupResult =
@@ -1328,14 +1314,18 @@ function setupSignup() {
             const password =
                 signupPassword.value.trim();
 
+            const role =
+                signupRole.value;
+
 
             if (
                 email === "" ||
-                password === ""
+                password === "" ||
+                role === ""
             ) {
 
                 alert(
-                    "Please enter your email and password."
+                    "Please enter your email, password, and select your role."
                 );
 
                 return;
@@ -1355,7 +1345,8 @@ function setupSignup() {
             const userData = {
 
                 email: email,
-                password: password
+                password: password,
+                role: role
             };
 
 
@@ -1408,6 +1399,7 @@ function setupSignup() {
 
                     signupEmail.value = "";
                     signupPassword.value = "";
+                    signupRole.value = "";
 
                 } else {
 
@@ -1432,7 +1424,109 @@ function setupSignup() {
 
         }
     );
+}
 
+
+/* =========================
+   ROLE-BASED UI CONTROL
+========================= */
+
+function applyRoleBasedAccess() {
+
+    const userRole =
+        localStorage.getItem("userRole");
+
+
+    console.log(
+        "Current user role:",
+        userRole
+    );
+
+
+    if (!userRole) {
+        return;
+    }
+
+
+    const emergencySection =
+        document.getElementById(
+            "emergency-request"
+        );
+
+    const emergencyRequestsSection =
+        document.getElementById(
+            "emergency-requests"
+        );
+
+    const matchHistorySection =
+        document.getElementById(
+            "match-history"
+        );
+
+    const findDonorSection =
+        document.getElementById(
+            "find-donor"
+        );
+
+
+    /* =========================
+       DONOR
+    ========================= */
+
+    if (userRole === "DONOR") {
+
+        if (emergencySection) {
+            emergencySection.style.display =
+                "none";
+        }
+
+        if (emergencyRequestsSection) {
+            emergencyRequestsSection.style.display =
+                "none";
+        }
+
+        if (matchHistorySection) {
+            matchHistorySection.style.display =
+                "none";
+        }
+
+        if (findDonorSection) {
+            findDonorSection.style.display =
+                "none";
+        }
+
+        console.log(
+            "Donor access applied."
+        );
+    }
+
+
+    /* =========================
+       HOSPITAL STAFF
+    ========================= */
+
+    else if (
+        userRole === "HOSPITAL_STAFF"
+    ) {
+
+        console.log(
+            "Hospital staff access applied."
+        );
+    }
+
+
+    /* =========================
+       ADMIN
+    ========================= */
+
+    else if (
+        userRole === "ADMIN"
+    ) {
+
+        console.log(
+            "Admin access applied."
+        );
+    }
 }
 
 
@@ -1468,6 +1562,8 @@ document.addEventListener(
         setupLogin();
 
         setupSignup();
+
+        applyRoleBasedAccess();
 
     }
 );
